@@ -41,12 +41,16 @@ class Database
     }
 
 
-    public function getSelectQueryResult($query = '')
+    public function getSelectQueryResult($query = '', $list = true)
     {
         try {
             $query = $this->conn->prepare($query);
             $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+            if($list){
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }else{
+                return $query->fetchColumn();
+            }
         } catch (PDOException $e) {
             print_r($e);
             echo $query . "<br>" . $e->getMessage();
@@ -95,8 +99,8 @@ class Database
 
     public function getMaxPages($perPage = 10){
         $sql = "SELECT COUNT(*) AS `total` FROM `images`";
-        $totalPages = $this->getSelectQueryResult($sql);
-        return ceil($totalPages[0]['total']/$perPage);
+        $totalPages = $this->getSelectQueryResult($sql, false);
+        return ceil($totalPages/$perPage);
     }
 
     public function getHtml ($page=1, $perPage = 10){
@@ -115,7 +119,7 @@ class Database
             <?php foreach ($result as $value) { ?>
                 <?php $values = explode('||', $value['values']);  ?>
                 <?php $keys = explode('||', $value['keys']); $combine = (array_combine($keys , $values)) ?>
-                <div class="col-md-2">
+                <div class="col-md-2" data-toggle="modal" data-target=".myModal">
                     <div class="card mb-4 box-shadow">
                         <img data-id="<?= $value['id'] ?>" class="card-img-top" style="height: 100px; width: 100%; display: block;" src="/upload/<?= $combine['name'] ?>" data-holder-rendered="true">
                     </div>
@@ -131,5 +135,12 @@ class Database
             </ul>
         </nav>
         <?php return ob_get_clean();
+    }
+
+    public function viewImageById($id){
+        $query = "SELECT `value` FROM `attrs` WHERE `key` = 'name' AND `image_id` = '{$id}'";
+        $update = "UPDATE attrs SET `value` = ? WHERE `image_id` = ? AND `key` = ?";
+        $this->conn->prepare($update)->execute([10,38,'views']);
+        return $this->getSelectQueryResult($query, false);
     }
 }

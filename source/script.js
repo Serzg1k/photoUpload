@@ -3,8 +3,12 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         let data = new FormData();
         let files = $('#file')[0].files[0];
-        data.append('file',files);
-        sendAjax(data, 'insert');
+        if (files){
+            data.append('file',files);
+            sendAjax(data, 'insert');
+        }else{
+            //@todo show error message
+        }
     });
 
     $(document).on('click','.pagination a', function (e) {
@@ -27,6 +31,7 @@ jQuery(document).ready(function ($) {
                 if(callback === 'pagination'){
                     $('#select-result').html(response);
                 }else if(callback === 'insert'){
+                    $('#upload-form').trigger('reset');
                     $('#select-result .row').children().first().before(response)
                 }
             },

@@ -5,6 +5,7 @@ require __DIR__ . '/Database.php';
 
 $pdo = Database::getInstance();
 $result = $pdo->getHtml(1,10);
+print_r($pdo->viewImageById(38));
 ?>
 
 <!doctype html>
@@ -17,6 +18,10 @@ $result = $pdo->getHtml(1,10);
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="https://getbootstrap.com/docs/4.0/examples/album/album.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <header>
@@ -67,6 +72,11 @@ $result = $pdo->getHtml(1,10);
 </main>
 </body>
 </html>
-
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<div class="modal fade myModal" >
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="load-image">
+            <img src="https://flevix.com/wp-content/uploads/2019/07/Ring-Preloader.gif" alt="" width="500px">
+        </div>
+    </div>
+</div>
 <script src="/source/script.js"></script>
