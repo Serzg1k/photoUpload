@@ -1,12 +1,37 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/Database.php';
-
+$pdo = Database::getInstance();
 if($_POST['callback'] === 'insert'){
     echo insertImage();
 }elseif ($_POST['callback'] === 'pagination'){
-    $pdo = Database::getInstance();
     echo $pdo->getHtml($_POST['page'], 10);
+}elseif($_POST['callback'] === 'views'){
+    $pdo->viewImageById($_POST['imageId'], $_POST['views']);
+}elseif ($_POST['callback'] === 'filter'){
+    $and = '';
+    $minH = isset($_POST['minH'])?$_POST['minH']:false;
+    $maxH = isset($_POST['maxH'])?$_POST['maxH']:false;
+    $minW = isset($_POST['minW'])?$_POST['minW']:false;
+    $maxW = isset($_POST['maxW'])?$_POST['maxW']:false;
+    $views = isset($_POST['views'])?$_POST['views']:false;
+    if($minH){
+        $and .= "AND `key` = 'height' AND `value` > {$minH} ";
+    }
+    if ($maxH){
+        $and .= "AND `key` = 'height' AND `value` < {$maxH} ";
+    }
+    if ($minW){
+        $and .= "AND `key` = 'width' AND `value` > {$minW} ";
+    }
+    if ($maxW){
+        $and .= "AND `key` = 'width' AND `value` < {$maxW} ";
+    }
+    if ($views){
+        $and .= "AND `key` = 'views' AND `value` > {$views} ";
+    }
+    print_r($and);
+    print_r($pdo->getIdsByFilters($and));
 }
 
 function insertImage(){

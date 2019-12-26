@@ -110,7 +110,7 @@ class Database
             GROUP_CONCAT(a.key SEPARATOR '||') AS `keys`,
             GROUP_CONCAT(a.value SEPARATOR '||') AS `values` 
             FROM `images` AS `i` INNER JOIN `attrs` AS `a`
-            ON i.ID = a.image_id GROUP BY i.id ORDER BY i.id DESC LIMIT 10 OFFSET {$paged}";
+            ON i.ID = a.image_id GROUP BY i.id ORDER BY i.id DESC LIMIT {$perPage} OFFSET {$paged}";
         $result = $this->getSelectQueryResult($query);
         $total_pages = $this->getMaxPages($perPage);
 
@@ -121,7 +121,7 @@ class Database
                 <?php $keys = explode('||', $value['keys']); $combine = (array_combine($keys , $values)) ?>
                 <div class="col-md-2" data-toggle="modal" data-target=".myModal">
                     <div class="card mb-4 box-shadow">
-                        <img data-id="<?= $value['id'] ?>" class="card-img-top" style="height: 100px; width: 100%; display: block;" src="/upload/<?= $combine['name'] ?>" data-holder-rendered="true">
+                        <img data-id="<?= $value['id'] ?>" data-views="<?= $combine['views'] ?>" class="card-img-top" style="height: 100px; width: 100%; display: block;" src="/upload/<?= $combine['name'] ?>" data-holder-rendered="true">
                     </div>
                 </div>
             <?php } ?>
@@ -137,10 +137,14 @@ class Database
         <?php return ob_get_clean();
     }
 
-    public function viewImageById($id){
-        $query = "SELECT `value` FROM `attrs` WHERE `key` = 'name' AND `image_id` = '{$id}'";
-        $update = "UPDATE attrs SET `value` = ? WHERE `image_id` = ? AND `key` = ?";
-        $this->conn->prepare($update)->execute([10,38,'views']);
-        return $this->getSelectQueryResult($query, false);
+    public function viewImageById($image_id, $views=0){
+        $update = "UPDATE attrs SET `value` = ? WHERE `image_id` = ? AND `key` = 'views'";
+        $this->conn->prepare($update)->execute([$views,$image_id]);
+        return true;
+    }
+
+    public function getIdsByFilters($and= ''){
+        $sql = "SELECT DISTINCT image_id FROM `attrs` WHERE 1=1 {$and}";
+        return $totalPages = $this->getSelectQueryResult($sql, true);
     }
 }

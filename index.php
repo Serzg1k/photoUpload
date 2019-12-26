@@ -5,7 +5,6 @@ require __DIR__ . '/Database.php';
 
 $pdo = Database::getInstance();
 $result = $pdo->getHtml(1,10);
-print_r($pdo->viewImageById(38));
 ?>
 
 <!doctype html>
@@ -28,22 +27,22 @@ print_r($pdo->viewImageById(38));
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <form>
+            <form id="form-filter">
                 <div class="row">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Min height">
+                        <input type="text" id="min-height" class="form-control" placeholder="Min height">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Max height">
+                        <input type="text" id="max-height" class="form-control" placeholder="Max height">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Min width">
+                        <input type="text" id="min-width" class="form-control" placeholder="Min width">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Max width">
+                        <input type="text" id="max-width" class="form-control" placeholder="Max width">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Views">
+                        <input type="text" id="views" class="form-control" placeholder="Views">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
@@ -56,7 +55,9 @@ print_r($pdo->viewImageById(38));
         <section class="jumbotron text-center">
             <div class="container">
                 <h1 class="jumbotron-heading">Album example</h1>
-
+                <div class="alert alert-danger" role="alert" style="display: none">
+                    File is empty
+                </div>
                 <form method="post" action="" enctype="multipart/form-data" id="upload-form">
                     <div class="form-group">
                         <input class="form-control-file" type="file" id="file" name="file" />
